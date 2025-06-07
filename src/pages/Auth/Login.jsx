@@ -1,9 +1,28 @@
-import React from 'react'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthLayout from "../../components/layouts/AuthLayout";
 
 const Login = () => {
-  return (
-    <div>Login</div>
-  )
-}
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
-export default Login
+  const navigate = useNavigate();
+
+  // handle login form submit
+  const handleLogin = (event) => {
+    event.preventDefault();
+  };
+  return (
+    <AuthLayout>
+      <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center ">
+        <h3 className="text-lg font-semibold text-black">Welcome Back</h3>
+        <p className="text-xs text-slate-700 mt-[5px] mb-6">
+          Please enter your details to login
+        </p>
+      </div>
+    </AuthLayout>
+  );
+};
+
+export default Login;
