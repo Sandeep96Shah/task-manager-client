@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/inputs/Input";
 import AuthLayout from "../../components/layouts/AuthLayout";
+import { API_PATHS } from "../../utils/apiPaths";
+import axiosInstance from "../../utils/axiosInstance";
 import { validateEmail } from "../../utils/helper";
 
 const Login = () => {
@@ -12,7 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // handle login form submit
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
     if (!validateEmail(email)) {
@@ -28,7 +30,32 @@ const Login = () => {
     setError("");
 
     // Login API
+    try {
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
+
+      const { token, role } = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong, Please try again later!");
+      }
+    }
   };
+
   return (
     <AuthLayout>
       <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center ">
